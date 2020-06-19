@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from pymongo.errors import *
 
 from config import *
-
+import utils
 
 def insert_one(collection_name='', doc={}):
     try:
@@ -59,6 +59,19 @@ def load_cookies():
         for doc in docs:
             cookies.append(doc)
         return cookies
+
+#from mongodb get id and password datas
+def get_accounts():
+    id_list=[]
+    with MongoClient(MONGO_HOST, MONGO_PORT) as client:
+        collection=client.math_questions.account
+        
+        for i in list(collection.find()):
+            phone=utils.rsa_decrypt(i['phone'])
+            pwd=utils.rsa_decrypt(i['password'])
+            id_list.append({'phone':phone,'password':pwd})
+    
+    return id_list
 
 
 # data = load_unresolved_url("question_url", 10, 0)
